@@ -684,6 +684,8 @@ prof_log_stop(tsdn_t *tsdn) {
 	}
 	log_tables_initialized = false;
 
+	malloc_mutex_lock(tsdn, &log_mtx);
+
 	/* Free linked list nodes to prevent memory leaks. */
 	{
 		prof_bt_node_t *bt = log_bt_first;
@@ -719,7 +721,6 @@ prof_log_stop(tsdn_t *tsdn) {
 	log_alloc_first = NULL;
 	log_alloc_last = NULL;
 
-	malloc_mutex_lock(tsdn, &log_mtx);
 	prof_logging_state = prof_logging_state_stopped;
 	malloc_mutex_unlock(tsdn, &log_mtx);
 
